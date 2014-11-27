@@ -1,0 +1,8 @@
+@(message: String)
+
+@main("Test") {
+	<b>This is a test: @message</b>
+	@helper.form(routes.Application.submit()) {
+		<button type="submit">Submit</button>
+   	}
+}
