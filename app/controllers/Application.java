@@ -1,36 +1,43 @@
 package controllers;
 
+import models.Page;
 import play.api.templates.Html;
 import play.mvc.Controller;
 import play.mvc.Result;
 import views.html.*;
 
 public class Application extends Controller {
-	public static String[] CONTENT_PAGES = new String[] {
-		"index",
-		"test"
+	public static Page[] CONTENT_PAGES = new Page[] {
+		new Page("Welcome", ""),
+		new Page("About Us", "about"),
+		new Page("Wedding Events", "events"),
+		new Page("Travel", "travel"),
+		new Page("Accommodations", "accommodations"),
+		new Page("Registry", "registry"),
+		new Page("Contact Us", "contact"),
+		new Page("RSVP", "rsvp")
 	};
-	
-
-    public static Result index() {
-        return ok(index.render("Charlotte and Archie's Wedding"));
-    }
-    
-    public static Result test() {
-    	return ok(render("main", "relfection Test", Html.apply("<p>Reflection Works Brah</p>")));
-    }
-    
-    public static Result submit() {
-    	return ok(test.render("Submit!!!"));
-    }
     
     public static Result content(String action) {
-    	//return ok(main.render(action, content.render()));
-    	return ok(main.render(action, render("content")));
+    	Page current = getCurrentPage(action);
+    	Html content;
+    	
+    	if (action.isEmpty()) {
+    		content = render("index");
+    	} else {
+    		content = render(action);
+    	}
+    	
+    	return ok(main.render(current, CONTENT_PAGES, content));
     }
     
-    public static Result archie() {
-    	return ok(main.render("test", Html.apply("<p>Archie's Page</p>")));
+    private static Page getCurrentPage(String link) {
+    	for (Page p: CONTENT_PAGES) {
+    		if (link.equals(p.link)) {
+    			return p;
+    		}
+    	}
+    	return null;
     }
     
     private static Html render(String page, Object... params) {
