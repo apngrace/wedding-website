@@ -10,3 +10,22 @@ body {
 .copyright {
   text-align: center;
 }
+
+.rel-centered-div {
+	display: inline-flex;
+	position: relative; 
+	left: 50%
+}
+
+.rel-left-centered {
+	padding-right: 10px; 
+	float: left; 
+	position: relative; 
+	left: -50%
+}
+
+.rel-centered-text {
+	text-align: left; 
+	position: relative; 
+	left: -50%
+}

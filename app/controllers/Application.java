@@ -13,6 +13,7 @@ public class Application extends Controller {
 		new Page("Wedding Events", "events"),
 		new Page("Travel", "travel"),
 		new Page("Accommodations", "accommodations"),
+		new Page("Local Activities", "activities"),
 		new Page("Registry", "registry"),
 		new Page("Contact Us", "contact"),
 		new Page("RSVP", "rsvp")
