@@ -7,6 +7,12 @@ import play.mvc.Result;
 import views.html.*;
 
 public class Application extends Controller {
+	public static final String AUTH_TIME = "authTime";
+	public static final long AUTH_TIMEOUT = 30 * 60 * 1000; //30 Minutes
+	public static final String PASSWORD = "gracewedding";
+	
+	public static Page AUTH = new Page("Password", "");
+	
 	public static Page[] CONTENT_PAGES = new Page[] {
 		new Page("Welcome", ""),
 		new Page("About Us", "about"),
@@ -20,6 +26,10 @@ public class Application extends Controller {
 	};
     
     public static Result content(String action) {
+    	if (!checkAuth()) {
+    		return auth();
+    	}
+    	
     	Page current = getCurrentPage(action);
     	Html content;
     	
@@ -30,6 +40,47 @@ public class Application extends Controller {
     	}
     	
     	return ok(main.render(current, CONTENT_PAGES, content));
+    }
+    
+    private static Result auth() {
+    	return ok(main.render(AUTH, new Page[0], render("auth"))); 
+    }
+    
+    public static Result login() {
+    	String[] passwords = request().body().asFormUrlEncoded().get("password");
+    	
+    	if (passwords == null || passwords.length != 1 || !passwords[0].equals(PASSWORD)) {
+    		return auth();
+    	} else {
+    		authorizeUser();
+    		return content("");
+    	}
+    }
+    
+    private static void authorizeUser() {
+    	session(AUTH_TIME, Long.toString(System.currentTimeMillis() + AUTH_TIMEOUT));
+    }
+    
+    private static boolean checkAuth() {
+    	String temp = session(AUTH_TIME);
+    	if (temp == null) {
+    		return false;
+    	}
+    	
+    	Long authTime = null;
+    	try {
+    		
+    		authTime = Long.parseLong(session(AUTH_TIME));
+    	} catch (NumberFormatException ex) {
+    		ex.printStackTrace();
+    		authTime = null;
+    	}
+    	
+    	if (authTime == null || authTime < System.currentTimeMillis()) {
+    		return false;
+    	}
+    	
+    	return true;
     }
     
     private static Page getCurrentPage(String link) {

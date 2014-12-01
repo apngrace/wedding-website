@@ -5,6 +5,7 @@ body {
 .main-content {
   padding: 40px 15px;
   text-align: center;
+  background: #FFFFFF;
 }
 
 .copyright {
@@ -14,18 +15,25 @@ body {
 .rel-centered-div {
 	display: inline-flex;
 	position: relative; 
-	left: 50%
+	/*left: 50%*/
 }
 
 .rel-left-centered {
-	padding-right: 10px; 
 	float: left; 
 	position: relative; 
-	left: -50%
+	/*left: -50%*/
+}
+
+.prov-image {
+	min-width: 285px;
+}
+
+.welcome-image {
+	min-width: 525px;
 }
 
 .rel-centered-text {
 	text-align: left; 
 	position: relative; 
-	left: -50%
+	/*left: -50%*/
 }
