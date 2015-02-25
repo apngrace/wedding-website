@@ -1,0 +1,12 @@
+# --- Rev:1,Downs - 94de3e9
+drop table if exists guest cascade;
+
+# --- Rev:1,Ups - 6e86114
+create table guest (
+	id                        serial primary key,
+	name                      varchar(255),
+	household                 varchar(255),
+	attending_wedding         boolean not null default false,
+	attending_rehearsal       boolean not null default false,
+	last_update_date          timestamp
+);

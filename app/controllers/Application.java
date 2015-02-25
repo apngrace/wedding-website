@@ -1,5 +1,6 @@
 package controllers;
 
+import models.Guest;
 import models.Page;
 import play.api.templates.Html;
 import play.mvc.Controller;
@@ -9,7 +10,9 @@ import views.html.*;
 public class Application extends Controller {
 	public static final String AUTH_TIME = "authTime";
 	public static final long AUTH_TIMEOUT = 30 * 60 * 1000; //30 Minutes
-	public static final String PASSWORD = "gracewedding";
+	public static final String PASSWORD = "springwedding";
+	
+	private static final Page RSVP_PAGE = new Page("RSVP", "rsvp");
 	
 	public static Page AUTH = new Page("Password", "");
 	
@@ -22,10 +25,11 @@ public class Application extends Controller {
 		new Page("Local Activities", "activities"),
 		new Page("Registry", "registry"),
 		new Page("Contact Us", "contact"),
-		new Page("RSVP", "rsvp")
+		RSVP_PAGE
 	};
     
     public static Result content(String action) {
+    	
     	if (!checkAuth()) {
     		return auth();
     	}
@@ -35,6 +39,8 @@ public class Application extends Controller {
     	
     	if (action.isEmpty()) {
     		content = render("index");
+    	} else if (current == RSVP_PAGE) {
+    		content = render(action, Guest.findAll());
     	} else {
     		content = render(action);
     	}

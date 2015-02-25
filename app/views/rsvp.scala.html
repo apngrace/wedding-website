@@ -1,1 +1,48 @@
-Mail the invitation back to us!
+@(guests: com.avaje.ebean.common.BeanList[Guest])
+<div>
+	<p>
+		<div class="rsvp-item">
+		    <div class="input-group input-group-lg">
+		    	<input type="text" class="form-control" placeholder="Find me...">
+				<span class="input-group-btn">
+					<button class="btn btn-default" type="button">Search</button>
+				</span>
+		    </div><!-- /input-group -->
+		</div>
+	</p>
+	<p>
+		@for(guest <- guests) {
+			<br />
+			<div class="rsvp-item">
+				<div class="rsvp-name">@guest.name</div>
+				Will Attend:
+    			<div class="input-group input-group-lg rsvp-first-item">
+    			<!--
+      			<input type="text" class="form-control" aria-label="..." value="Friday Rehearsal Dinner (Location TBD)" disabled>
+      			-->
+				<div class="form-control" aria-label="...">Friday Rehearsal Dinner (Location TBD)</div>
+      			<span class="input-group-addon">
+      				<input type="checkbox" aria-label="..."
+      					@if(guest.lastUpdateDate == null || guest.attendingRehearsal) { checked }
+      				>
+      			</span>
+    			</div><!-- /input-group -->
+    			<div class="input-group input-group-lg">
+    			<!--
+      			<input type="text" class="form-control" aria-label="..." value="Saturday Wedding and Reception (Aldrich Mansion)" disabled>
+      			-->
+      			<div class="form-control" aria-label="...">Saturday Wedding and Reception (Aldrich Mansion)</div>
+      			<span class="input-group-addon">
+      				<input type="checkbox" aria-label="..." 
+      					@if(guest.lastUpdateDate == null || guest.attendingWedding) { checked }
+      				>
+      			</span>
+    			</div><!-- /input-group -->
+  			</div><!-- /rsvp-item -->
+		} 
+	</p>
+	<br />
+	<p>
+		<div class="rsvp-item rsvp-bottom"><button class="btn btn-default rsvp-button" type="button">Submit RSVP</button></div>
+	</p>
+</div>
