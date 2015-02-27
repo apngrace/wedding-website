@@ -1,10 +1,21 @@
 @(guests: com.avaje.ebean.common.BeanList[Guest])
 <script type="text/javascript"> 
 $(document).ready(function(){
- $("a.rsvp-response" ).on( "click", function( event ) {
+	search = function() {
+		var searchForm = $("#search");
+ 		searchForm.attr("action", searchForm.attr("action") + $("#search-text").val());
+ 		searchForm.submit();
+	};
+ 	$("a.rsvp-response" ).on( "click", function(event) {
  		var rsvpButton = $(this).closest(".dropdown").find(".rsvp-button");
  		rsvpButton.contents().first().remove();
  		rsvpButton.prepend($(this).text() + " ");
+	});
+	$("#search-button" ).on( "click", function(e) {
+ 		search();
+	});
+	$("#search-text").keyup(function(e){
+    	if(e.keyCode == 13) { search(); }
 	});
 });
  
@@ -13,12 +24,13 @@ $(document).ready(function(){
 	<p>
 		<div class="rsvp-item">
 		    <div class="input-group input-group-lg">
-		    	<input type="text" class="form-control" placeholder="Find me...">
+		    	<input type="text" class="form-control" id="search-text" placeholder="Find me...Enter your name...">
 				<span class="input-group-btn">
-					<button class="btn btn-default" type="button">Search</button>
+					<button class="btn btn-default" id="search-button" type="button">Search</button>
 				</span>
 		    </div><!-- /input-group -->
 		</div>
+		<form method="post" action="/rsvp/" id="search" />
 	</p>
 	<p>
 		@for(guest <- guests) {

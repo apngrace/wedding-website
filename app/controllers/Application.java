@@ -1,5 +1,9 @@
 package controllers;
 
+import java.util.Collections;
+
+import com.avaje.ebean.common.BeanList;
+
 import models.Guest;
 import models.Page;
 import play.api.templates.Html;
@@ -27,12 +31,27 @@ public class Application extends Controller {
 		new Page("Contact Us", "contact"),
 		RSVP_PAGE
 	};
+	
+	public static Result rsvp(String term) {
+		if (!checkAuth()) {
+    		return auth();
+    	}
+		
+		Page current = RSVP_PAGE;
+		Html content = render(current.link, Guest.findByName(term));
+		return ok(main.render(current, CONTENT_PAGES, content));
+	}
     
-    public static Result content(String action) {
-    	
+    public static Result content(String action) {	
     	if (!checkAuth()) {
     		return auth();
     	}
+    	
+    	System.out.println(action);
+    	if (action.endsWith("/")) {
+    		action = action.substring(0, action.length() - 1);
+    	}
+    	System.out.println(action);
     	
     	Page current = getCurrentPage(action);
     	Html content;
@@ -40,7 +59,7 @@ public class Application extends Controller {
     	if (action.isEmpty()) {
     		content = render("index");
     	} else if (current == RSVP_PAGE) {
-    		content = render(action, Guest.findAll());
+    		content = render(action, new BeanList<Guest>());
     	} else {
     		content = render(action);
     	}
