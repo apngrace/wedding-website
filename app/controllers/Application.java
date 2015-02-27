@@ -1,6 +1,7 @@
 package controllers;
 
-import java.util.Collections;
+import java.net.URLDecoder;
+import java.util.List;
 
 import com.avaje.ebean.common.BeanList;
 
@@ -37,8 +38,32 @@ public class Application extends Controller {
     		return auth();
     	}
 		
+		try {
+			term = URLDecoder.decode(term, "UTF-8");
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return content(RSVP_PAGE.link);
+		}
+		
 		Page current = RSVP_PAGE;
-		Html content = render(current.link, Guest.findByName(term));
+		
+		boolean needsVerification = false;
+		List<Guest> guests = Guest.findByName(term);
+		if (guests.size() > 1) {
+			String household = guests.get(0).household;
+			for (int i = 0;i<guests.size(); i++) {
+				if (!household.equals(guests.get(i))) {
+					needsVerification = true;
+					break;
+				}
+			}
+		}
+		
+		if (!needsVerification) {
+			guests.addAll(Guest.findOtherHouseholdGuests(guests.get(0)));
+		}
+		
+		Html content = render(current.link, guests, term, needsVerification);
 		return ok(main.render(current, CONTENT_PAGES, content));
 	}
     
@@ -46,20 +71,17 @@ public class Application extends Controller {
     	if (!checkAuth()) {
     		return auth();
     	}
-    	
-    	System.out.println(action);
+
     	if (action.endsWith("/")) {
     		action = action.substring(0, action.length() - 1);
     	}
-    	System.out.println(action);
-    	
+
     	Page current = getCurrentPage(action);
     	Html content;
-    	
     	if (action.isEmpty()) {
     		content = render("index");
     	} else if (current == RSVP_PAGE) {
-    		content = render(action, new BeanList<Guest>());
+    		content = render(action, new BeanList<Guest>(), "", false);
     	} else {
     		content = render(action);
     	}

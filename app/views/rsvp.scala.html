@@ -1,4 +1,4 @@
-@(guests: com.avaje.ebean.common.BeanList[Guest])
+@(guests: com.avaje.ebean.common.BeanList[Guest], term:String, needsVerification:Boolean)
 <script type="text/javascript"> 
 $(document).ready(function(){
 	search = function() {
@@ -17,47 +17,77 @@ $(document).ready(function(){
 	$("#search-text").keyup(function(e){
     	if(e.keyCode == 13) { search(); }
 	});
+	@if(needsVerification) {
+		$(".rsvp-inputs").hide();
+	}
 });
- 
 </script>
+
 <div>
 	<p>
 		<div class="rsvp-item">
 		    <div class="input-group input-group-lg">
-		    	<input type="text" class="form-control" id="search-text" placeholder="Find me...Enter your name...">
+		    	<input type="text" class="form-control" id="search-text" placeholder="Enter Your Name" value="@term">
 				<span class="input-group-btn">
 					<button class="btn btn-default" id="search-button" type="button">Search</button>
 				</span>
 		    </div><!-- /input-group -->
 		</div>
 		<form method="post" action="/rsvp/" id="search" />
-	</p>
-	<p>
+	</p>			
+	@if(!term.isEmpty() && guests.size() == 0) {
+		<p>
+			<div class="rsvp-item">
+				<div class="alert alert-warning">
+					No matching guest found for "@term".<br /> 
+					If you believe this is an error, please contact Archie at:
+					<a href="mailto:apngrace@@hotmail.com">apngrace@@hotmail.com</a>
+				</div>
+			</div>
+		</p>
+	}
+	@if(needsVerification) {
+		<p>
+			<div class="rsvp-item">
+				<div class="alert alert-info">
+					Found multiple guests for "@term".<br />
+					Please select the correct guest by clicking on the name which best matches you...
+				</div>
+			</div>
+		</p>
+	}
+	
+	<p> 
 		@for(guest <- guests) {
 			<br />
 			<div class="rsvp-item">
-				<div class="rsvp-name">@guest.name</div>
-    			<div class="input-group input-group-lg rsvp-first-item">
+				@if(needsVerification) {
+					<div class="rsvp-name"><a href="/rsvp/@guest.name">@guest.name</a></div>
+				} else {
+					<div class="rsvp-name">@guest.name</div>
+				}
+				<div class="rsvp-household">@guest.household</div>
+    			<div class="input-group input-group-lg rsvp-first-item rsvp-inputs">
 	      			<span class="input-group-addon rsvp-zero-pad">
 				    	<div class="dropdown">
-					        <button class="btn btn-default dropdown-toggle rsvp-button" type="button" id="menu1" data-toggle="dropdown">Will Attend
+					        <button class="btn btn-default dropdown-toggle rsvp-button" data-toggle="dropdown">Will Attend
 					        <span class="caret"></span></button>
-					        <ul class="dropdown-menu rsvp-drop-down" role="menu" aria-labelledby="menu1">
-					          <li role="presentation"><a class="rsvp-response">Will Attend</a></li>
-					          <li role="presentation"><a class="rsvp-response">Won't Attend</a></li>
+					        <ul class="dropdown-menu rsvp-drop-down">
+					          <li><a class="rsvp-response">Will Attend</a></li>
+					          <li><a class="rsvp-response">Won't Attend</a></li>
 					        </ul>
 				      	</div>
 	      			</span>
       				<div class="form-control" aria-label="...">Friday Rehearsal Dinner (Location TBD)</div>
     			</div><!-- /input-group -->
-    			<div class="input-group input-group-lg">
+    			<div class="input-group input-group-lg rsvp-inputs">
     			    <span class="input-group-addon rsvp-zero-pad">
 				    	<div class="dropdown">
-					        <button class="btn btn-default dropdown-toggle rsvp-button" type="button" id="menu1" data-toggle="dropdown">Will Attend
+					        <button class="btn btn-default dropdown-toggle rsvp-button" data-toggle="dropdown">Will Attend
 					        <span class="caret"></span></button>
-					        <ul class="dropdown-menu rsvp-drop-down" role="menu" aria-labelledby="menu1">
-					          <li role="presentation"><a class="rsvp-response">Will Attend</a></li>
-					          <li role="presentation"><a class="rsvp-response">Won't Attend</a></li>
+					        <ul class="dropdown-menu rsvp-drop-down">
+					          <li><a class="rsvp-response">Will Attend</a></li>
+					          <li><a class="rsvp-response">Won't Attend</a></li>
 					        </ul>
 				      	</div>
       				</span>
@@ -68,6 +98,6 @@ $(document).ready(function(){
 	</p>
 	<br />
 	<p>
-		<div class="rsvp-item rsvp-bottom"><button class="btn btn-default rsvp-button" type="button">Submit RSVP</button></div>
+		<div class="rsvp-item rsvp-bottom rsvp-inputs"><button class="btn btn-default rsvp-button" id="submit-rsvp" type="button">Submit RSVP</button></div>
 	</p>
 </div>
