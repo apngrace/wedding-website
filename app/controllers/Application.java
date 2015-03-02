@@ -1,12 +1,15 @@
 package controllers;
 
 import java.net.URLDecoder;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import com.avaje.ebean.common.BeanList;
 
 import models.Guest;
 import models.Page;
+import play.Logger;
 import play.api.templates.Html;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -33,6 +36,36 @@ public class Application extends Controller {
 		RSVP_PAGE
 	};
 	
+	public static Result rsvpSubmit(String term) {
+		System.out.println("rsvpSubmit");
+		Map<String, String[]> fields = request().body().asFormUrlEncoded();
+		
+		String[] ids = fields.get("id");
+		List<Guest> guests = new BeanList<Guest>();
+		for(String id : ids) {
+			Guest g = Guest.findById(id);
+			if (g == null) {
+				Logger.warn("No guest found for id: " + id);
+			}
+			guests.add(g);
+		}
+		
+		String[] wedding = fields.get("attendingWedding"), rehearsal = fields.get("attendingRehearsal");
+		
+		for (int i = 0; i < guests.size(); i++) {
+			Guest g = guests.get(i);
+			if (g == null) { continue; }
+			g.attendingWedding = g.getAttending(wedding[i]);
+			g.attendingRehearsal = g.getAttending(rehearsal[i]);
+			g.lastUpdateDate = new Date();
+			g.save();
+		}
+		
+		Page current = RSVP_PAGE;
+		Html content = render(current.link, guests, term, false, true, false);
+		return ok(main.render(current, CONTENT_PAGES, content));
+	}
+	
 	public static Result rsvp(String term) {
 		if (!checkAuth()) {
     		return auth();
@@ -58,12 +91,19 @@ public class Application extends Controller {
 				}
 			}
 		}
+		boolean alreadySubmitted = (guests.size() > 0);
+		for (Guest g : guests) {
+			if (g.lastUpdateDate == null) {
+				alreadySubmitted = false;
+				break;
+			}
+		}
 		
-		if (!needsVerification) {
+		if (!needsVerification && !guests.isEmpty()) {
 			guests.addAll(Guest.findOtherHouseholdGuests(guests.get(0)));
 		}
 		
-		Html content = render(current.link, guests, term, needsVerification);
+		Html content = render(current.link, guests, term, needsVerification, false, !(needsVerification) && alreadySubmitted);
 		return ok(main.render(current, CONTENT_PAGES, content));
 	}
     
@@ -81,7 +121,7 @@ public class Application extends Controller {
     	if (action.isEmpty()) {
     		content = render("index");
     	} else if (current == RSVP_PAGE) {
-    		content = render(action, new BeanList<Guest>(), "", false);
+    		content = render(action, new BeanList<Guest>(), "", false, false, false);
     	} else {
     		content = render(action);
     	}
@@ -142,7 +182,7 @@ public class Application extends Controller {
     private static Html render(String page, Object... params) {
     	Class<?>[] classes = new Class<?>[params.length];
     	for (int i = 0; i < params.length; i++) {
-    		classes[i] = params[i].getClass();
+    			classes[i] = params[i].getClass();
     	}
     	
     	try {

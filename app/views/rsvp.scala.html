@@ -1,4 +1,4 @@
-@(guests: com.avaje.ebean.common.BeanList[Guest], term:String, needsVerification:Boolean)
+@(guests: com.avaje.ebean.common.BeanList[Guest], term:String, needsVerification:Boolean, isSubmit:Boolean, alreadySubmitted:Boolean)
 <script type="text/javascript"> 
 $(document).ready(function(){
 	search = function() {
@@ -10,15 +10,31 @@ $(document).ready(function(){
  		var rsvpButton = $(this).closest(".dropdown").find(".rsvp-button");
  		rsvpButton.contents().first().remove();
  		rsvpButton.prepend($(this).text() + " ");
+ 		$(this).closest(".rsvp-inputs").find(".hidden-input").val($(this).text());
 	});
 	$("#search-button" ).on( "click", function(e) {
  		search();
 	});
+	$("#submit-rsvp" ).on( "click", function(e) {
+		e.preventDefault();
+ 		$("#rsvp-form").submit();
+	});
 	$("#search-text").keyup(function(e){
     	if(e.keyCode == 13) { search(); }
 	});
+	var innerHtml = "";
 	@if(needsVerification) {
 		$(".rsvp-inputs").hide();
+		innerHtml = 'Found multiple guests for "@term".<br />Please select the correct guest by clicking on the name which best matches you...';
+	}
+	@if(isSubmit) {
+		innerHtml = 'Thanks for submitting your response!<br />You may verify your responses below and can revise them at any time prior to April 1st...';
+	}
+	@if(alreadySubmitted) {
+		innerHtml = 'Responses for the selected guests have already been submitted.<br />You may revise them at any time prior to April 1st...';
+	}
+	if (innerHtml !== "") {
+		$(".alert-info").html(innerHtml);
 	}
 });
 </script>
@@ -33,7 +49,7 @@ $(document).ready(function(){
 				</span>
 		    </div><!-- /input-group -->
 		</div>
-		<form method="post" action="/rsvp/" id="search" />
+		<form method="post" action="/rsvp/" id="search"></form>
 	</p>			
 	@if(!term.isEmpty() && guests.size() == 0) {
 		<p>
@@ -46,56 +62,57 @@ $(document).ready(function(){
 			</div>
 		</p>
 	}
-	@if(needsVerification) {
+	@if(needsVerification || isSubmit || alreadySubmitted) {
 		<p>
 			<div class="rsvp-item">
-				<div class="alert alert-info">
-					Found multiple guests for "@term".<br />
-					Please select the correct guest by clicking on the name which best matches you...
-				</div>
+				<div class="alert alert-info"></div>				
 			</div>
 		</p>
 	}
-	
-	<p> 
-		@for(guest <- guests) {
-			<br />
-			<div class="rsvp-item">
-				@if(needsVerification) {
-					<div class="rsvp-name"><a href="/rsvp/@guest.name">@guest.name</a></div>
-				} else {
-					<div class="rsvp-name">@guest.name</div>
-				}
-				<div class="rsvp-household">@guest.household</div>
-    			<div class="input-group input-group-lg rsvp-first-item rsvp-inputs">
-	      			<span class="input-group-addon rsvp-zero-pad">
-				    	<div class="dropdown">
-					        <button class="btn btn-default dropdown-toggle rsvp-button" data-toggle="dropdown">Will Attend
-					        <span class="caret"></span></button>
-					        <ul class="dropdown-menu rsvp-drop-down">
-					          <li><a class="rsvp-response">Will Attend</a></li>
-					          <li><a class="rsvp-response">Won't Attend</a></li>
-					        </ul>
-				      	</div>
-	      			</span>
-      				<div class="form-control" aria-label="...">Friday Rehearsal Dinner (Location TBD)</div>
-    			</div><!-- /input-group -->
-    			<div class="input-group input-group-lg rsvp-inputs">
-    			    <span class="input-group-addon rsvp-zero-pad">
-				    	<div class="dropdown">
-					        <button class="btn btn-default dropdown-toggle rsvp-button" data-toggle="dropdown">Will Attend
-					        <span class="caret"></span></button>
-					        <ul class="dropdown-menu rsvp-drop-down">
-					          <li><a class="rsvp-response">Will Attend</a></li>
-					          <li><a class="rsvp-response">Won't Attend</a></li>
-					        </ul>
-				      	</div>
-      				</span>
-      				<div class="form-control" aria-label="...">Saturday Wedding and Reception (Aldrich Mansion)</div>
-    			</div><!-- /input-group -->
-  			</div><!-- /rsvp-item -->
-		} 
-	</p>
+	<form method="post" action="/rsvpSubmit/@term" id="rsvp-form">
+		<p> 
+			@for(guest <- guests) {
+				<br />
+				<input type="hidden" name="id" value="@guest.id"/>
+				<div class="rsvp-item">
+					@if(needsVerification) {
+						<div class="rsvp-name"><a href="/rsvp/@guest.name">@guest.name</a></div>
+					} else {
+						<div class="rsvp-name">@guest.name</div>
+					}
+					<div class="rsvp-household">@guest.household</div>
+	    			<div class="input-group input-group-lg rsvp-first-item rsvp-inputs">
+	    				<input type="hidden" name="attendingRehearsal" class="hidden-input" value="@guest.rehearsalStr"/>
+		      			<span class="input-group-addon rsvp-zero-pad">
+					    	<div class="dropdown">
+						        <button class="btn btn-default dropdown-toggle rsvp-button" data-toggle="dropdown">@guest.rehearsalStr
+						        <span class="caret"></span></button>
+						        <ul class="dropdown-menu rsvp-drop-down">
+						          <li><a class="rsvp-response">@guest.getAttending(true)</a></li>
+						          <li><a class="rsvp-response">@guest.getAttending(false)</a></li>
+						        </ul>
+					      	</div>
+		      			</span>
+	      				<div class="form-control" aria-label="...">Friday Rehearsal Dinner (Location TBD)</div>
+	    			</div><!-- /input-group -->
+	    			<div class="input-group input-group-lg rsvp-inputs">
+	    				<input type="hidden" name="attendingWedding" class="hidden-input" value="@guest.weddingStr"/>
+	    			    <span class="input-group-addon rsvp-zero-pad">
+					    	<div class="dropdown">
+						        <button class="btn btn-default dropdown-toggle rsvp-button" data-toggle="dropdown">@guest.weddingStr
+						        <span class="caret"></span></button>
+						        <ul class="dropdown-menu rsvp-drop-down">
+						          <li><a class="rsvp-response">@guest.getAttending(true)</a></li>
+						          <li><a class="rsvp-response">@guest.getAttending(false)</a></li>
+						        </ul>
+					      	</div>
+	      				</span>
+	      				<div class="form-control" aria-label="...">Saturday Wedding and Reception (Aldrich Mansion)</div>
+	    			</div><!-- /input-group -->
+	  			</div><!-- /rsvp-item -->
+			} 
+		</p>
+	</form>
 	<br />
 	<p>
 		<div class="rsvp-item rsvp-bottom rsvp-inputs"><button class="btn btn-default rsvp-button" id="submit-rsvp" type="button">Submit RSVP</button></div>
