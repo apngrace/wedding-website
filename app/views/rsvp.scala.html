@@ -19,12 +19,25 @@ $(document).ready(function(){
 		e.preventDefault();
  		$("#rsvp-form").submit();
 	});
+	$("#add-guest" ).on( "click", function(e) {
+		var items = $(".guest-info");
+		if (items.length === 0) {
+			return;
+		}
+		var newGuest = $(items[0]).clone();
+		newGuest.find("input[type=hidden][name=id]").val("@Guest.newGuestId()");
+		newGuest.find(".rsvp-name").html('<input type="text" class="form-control rsvp-extra-guest" name="name" autocomplete="off" placeholder="Enter Name (Click Here)">');
+		
+		$("#guest-container").append(newGuest);
+	});
 	$("#search-text").keyup(function(e){
     	if(e.keyCode == 13) { search(); }
 	});
 	var innerHtml = "";
-	@if(needsVerification) {
+	@if(guests.size() == 0 || needsVerification) {
 		$(".rsvp-inputs").hide();
+	}
+	@if(needsVerification) {
 		innerHtml = 'Found multiple guests for "@term".<br />Please select the correct guest by clicking on the name which best matches you...';
 	}
 	@if(isSubmit) {
@@ -70,11 +83,11 @@ $(document).ready(function(){
 		</p>
 	}
 	<form method="post" action="/rsvpSubmit/@term" id="rsvp-form">
-		<p> 
+		<div id="guest-container"> 
 			@for(guest <- guests) {
-				<br />
-				<input type="hidden" name="id" value="@guest.id"/>
-				<div class="rsvp-item">
+				<div class="rsvp-item guest-info">
+					<br />
+					<input type="hidden" name="id" value="@guest.id"/>
 					@if(needsVerification) {
 						<div class="rsvp-name"><a href="/rsvp/@guest.name">@guest.name</a></div>
 					} else {
@@ -87,9 +100,9 @@ $(document).ready(function(){
 					    	<div class="dropdown">
 						        <button class="btn btn-default dropdown-toggle rsvp-button" data-toggle="dropdown">@guest.rehearsalStr
 						        <span class="caret"></span></button>
-						        <ul class="dropdown-menu rsvp-drop-down">
-						          <li><a class="rsvp-response">@guest.getAttending(true)</a></li>
-						          <li><a class="rsvp-response">@guest.getAttending(false)</a></li>
+						        <ul class="dropdown-menu">
+						          <li><a class="rsvp-response">@Guest.getAttending(true)</a></li>
+						          <li><a class="rsvp-response">@Guest.getAttending(false)</a></li>
 						        </ul>
 					      	</div>
 		      			</span>
@@ -101,9 +114,9 @@ $(document).ready(function(){
 					    	<div class="dropdown">
 						        <button class="btn btn-default dropdown-toggle rsvp-button" data-toggle="dropdown">@guest.weddingStr
 						        <span class="caret"></span></button>
-						        <ul class="dropdown-menu rsvp-drop-down">
-						          <li><a class="rsvp-response">@guest.getAttending(true)</a></li>
-						          <li><a class="rsvp-response">@guest.getAttending(false)</a></li>
+						        <ul class="dropdown-menu">
+						          <li><a class="rsvp-response">@Guest.getAttending(true)</a></li>
+						          <li><a class="rsvp-response">@Guest.getAttending(false)</a></li>
 						        </ul>
 					      	</div>
 	      				</span>
@@ -111,10 +124,15 @@ $(document).ready(function(){
 	    			</div><!-- /input-group -->
 	  			</div><!-- /rsvp-item -->
 			} 
-		</p>
+		</div>
 	</form>
 	<br />
 	<p>
-		<div class="rsvp-item rsvp-bottom rsvp-inputs"><button class="btn btn-default rsvp-button" id="submit-rsvp" type="button">Submit RSVP</button></div>
+		<div class="rsvp-item rsvp-bottom rsvp-inputs">
+			<div class="rsvp-submit-button">
+				<button class="btn btn-default rsvp-button" id="add-guest" type="button">Add Guest</button>
+				<button class="btn btn-default rsvp-button" id="submit-rsvp" type="button">Submit RSVP</button>
+			</div>
+		</div>
 	</p>
 </div>

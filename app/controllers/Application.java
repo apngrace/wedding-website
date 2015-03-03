@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.avaje.ebean.Ebean;
 import com.avaje.ebean.common.BeanList;
 
 import models.Guest;
@@ -37,13 +38,24 @@ public class Application extends Controller {
 	};
 	
 	public static Result rsvpSubmit(String term) {
-		System.out.println("rsvpSubmit");
 		Map<String, String[]> fields = request().body().asFormUrlEncoded();
 		
-		String[] ids = fields.get("id");
+		String[] ids = fields.get("id"), names = fields.get("name");
 		List<Guest> guests = new BeanList<Guest>();
+		int name_index = 0;
 		for(String id : ids) {
-			Guest g = Guest.findById(id);
+			Guest g;
+			if (id.equals(Guest.newGuestId())) {
+				g = new Guest();
+				g.name = names[name_index++];
+				if (guests.size() == 0) {
+					throw new IllegalStateException("Adding guest at start of RSVP...");
+				}
+				g.household = guests.get(0).household;
+				g.id = Ebean.createSqlQuery("select nextval('guest_id_seq')").findUnique().getLong("nextval");
+			} else {
+				g = Guest.findById(id);
+			}
 			if (g == null) {
 				Logger.warn("No guest found for id: " + id);
 			}
@@ -55,8 +67,8 @@ public class Application extends Controller {
 		for (int i = 0; i < guests.size(); i++) {
 			Guest g = guests.get(i);
 			if (g == null) { continue; }
-			g.attendingWedding = g.getAttending(wedding[i]);
-			g.attendingRehearsal = g.getAttending(rehearsal[i]);
+			g.attendingWedding = Guest.getAttending(wedding[i]);
+			g.attendingRehearsal = Guest.getAttending(rehearsal[i]);
 			g.lastUpdateDate = new Date();
 			g.save();
 		}

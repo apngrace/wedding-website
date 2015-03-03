@@ -62,7 +62,7 @@ body {
 	padding-bottom: 10px;
 }
 
-.rsvp-button {
+.rsvp-submit-button {
 	font-size: 24px;
 	float: right;
 }
@@ -78,8 +78,17 @@ body {
 
 .rsvp-button {
 	height: 46px;
+	font-size: 24px;
 }
 
-.dropdown-menu.rsvp-drop-down {
-	margin-top: 48px;
+/* TODO: Add original box-shadow back in on hover or click? */
+.form-control.rsvp-extra-guest {
+	width: 50%;
+	border: none;
+	text-align: center;
+	font-size: 28px;
+	display: inline-block;
+	height: initial;
+	box-shadow: none;
+	-webkit-box-shadow: none;
 }

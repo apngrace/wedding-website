@@ -9,11 +9,12 @@ create table guest (
   household                 varchar(255),
   attending_wedding         boolean,
   attending_rehearsal       boolean,
+  child                     boolean,
   last_update_date          timestamp,
   constraint pk_guest primary key (id))
 ;
 
-create sequence guest_seq;
+create sequence guest_id_seq;
 
 
 
@@ -22,5 +23,5 @@ create sequence guest_seq;
 
 drop table if exists guest cascade;
 
-drop sequence if exists guest_seq;
+drop sequence if exists guest_id_seq;
 

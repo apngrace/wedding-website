@@ -8,6 +8,7 @@ POST    /                           controllers.Application.login()
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
 POST	/rsvpSubmit/*term			controllers.Application.rsvpSubmit(term: String)
+GET		/rsvpSubmit/*term			controllers.Application.rsvp(term: String)
 GET		/rsvp/*term					controllers.Application.rsvp(term: String)
 POST	/rsvp/*term					controllers.Application.rsvp(term: String)
 GET		/*action					controllers.Application.content(action: String)

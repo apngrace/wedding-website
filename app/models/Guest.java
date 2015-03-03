@@ -24,6 +24,10 @@ public class Guest extends Model {
 	public boolean attendingRehearsal;
 	public Date lastUpdateDate;
 	
+	public static String newGuestId() {
+		return "new_guest";
+	}
+	
 	public String weddingStr() {
 		return getAttending(lastUpdateDate == null || attendingWedding);
 	}
@@ -32,14 +36,14 @@ public class Guest extends Model {
 		return getAttending(lastUpdateDate == null || attendingRehearsal);
 	}
 	
-	public String getAttending(boolean fieldValue) {
+	public static String getAttending(boolean fieldValue) {
 		if (fieldValue) {
 			return ATTENDING;
 		}
 		return NOT_ATTENDING;
 	}
 	
-	public boolean getAttending(String value) {
+	public static boolean getAttending(String value) {
 		if (ATTENDING.equals(value)) {
 			return true;
 		} else if (NOT_ATTENDING.equals(value)) {
@@ -62,6 +66,6 @@ public class Guest extends Model {
 	}
 	
 	public static List<Guest> findOtherHouseholdGuests(Guest guest) {
-		return Ebean.createQuery(Guest.class, "where household = ? and name != ?").setParameter(1, guest.household).setParameter(2, guest.name).findList();
+		return Ebean.createQuery(Guest.class, "where household = ? and name != ? order by id").setParameter(1, guest.household).setParameter(2, guest.name).findList();
 	}
 }
