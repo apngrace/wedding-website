@@ -92,3 +92,7 @@ body {
 	box-shadow: none;
 	-webkit-box-shadow: none;
 }
+
+.select-guest {
+	background-color: #DDFFFF;
+}

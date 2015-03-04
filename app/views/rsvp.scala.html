@@ -1,6 +1,7 @@
 @(guests: com.avaje.ebean.common.BeanList[Guest], term:String, needsVerification:Boolean, isSubmit:Boolean, alreadySubmitted:Boolean)
 <script type="text/javascript"> 
 $(document).ready(function(){
+	var selectedItem = null;
 	search = function() {
 		var searchForm = $("#search");
  		searchForm.attr("action", searchForm.attr("action") + $("#search-text").val());
@@ -27,7 +28,24 @@ $(document).ready(function(){
 		var newGuest = $(items[0]).clone();
 		newGuest.find("input[type=hidden][name=id]").val("@Guest.newGuestId()");
 		newGuest.find(".rsvp-name").html('<input type="text" class="form-control rsvp-extra-guest" name="name" autocomplete="off" placeholder="Enter Name (Click Here)">');
-		
+		var removeGuest = $("#remove-guest");
+		removeGuest.show();
+		if (selectedItem == null) { removeGuest.prop("disabled", "true"); }
+		newGuest.on( "click", function(e) {
+			var removeGuest = $("#remove-guest");
+			var me = $(this);
+			var className = "select-guest";
+			if (me.hasClass(className)) {
+				me.removeClass(className);
+				selectedItem = null;
+				removeGuest.prop("disabled", "true");
+			} else {
+				$("." + className).removeClass(className);
+				me.addClass(className);
+				selectedItem = me;
+				removeGuest.removeAttr("disabled");
+			}
+		});
 		$("#guest-container").append(newGuest);
 	});
 	$("#search-text").keyup(function(e){
@@ -49,6 +67,17 @@ $(document).ready(function(){
 	if (innerHtml !== "") {
 		$(".alert-info").html(innerHtml);
 	}
+	$("#remove-guest").hide();
+	$("#remove-guest").on("click", function(e) {
+    	if(selectedItem != null) { 
+    		selectedItem.remove();
+    		selectedItem = null;
+    		$(this).prop("disabled", "true");
+    	}
+    	if($(".rsvp-extra-guest").length == 0) {
+    		$(this).hide();
+    	}
+	});
 });
 </script>
 
@@ -130,6 +159,7 @@ $(document).ready(function(){
 	<p>
 		<div class="rsvp-item rsvp-bottom rsvp-inputs">
 			<div class="rsvp-submit-button">
+				<button class="btn btn-default rsvp-button" id="remove-guest" type="button">Remove Guest</button>
 				<button class="btn btn-default rsvp-button" id="add-guest" type="button">Add Guest</button>
 				<button class="btn btn-default rsvp-button" id="submit-rsvp" type="button">Submit RSVP</button>
 			</div>
