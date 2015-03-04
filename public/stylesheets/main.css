@@ -10,19 +10,16 @@ body {
 
 .copyright {
   text-align: center;
-  color: white;
 }
 
 .rel-centered-div {
 	display: inline-flex;
 	position: relative; 
-	/*left: 50%*/
 }
 
 .rel-left-centered {
 	float: left; 
 	position: relative; 
-	/*left: -50%*/
 }
 
 .prov-image {
@@ -36,7 +33,6 @@ body {
 .rel-centered-text {
 	text-align: left;
 	position: relative; 
-	/*left: -50%*/
 }
 
 .reg-table {
@@ -47,6 +43,7 @@ body {
 	margin-left: auto;
 	margin-right: auto;
 	width: 60%;
+	padding-bottom: 10px;
 }
 
 .rsvp-first-item {
@@ -95,4 +92,26 @@ body {
 
 .select-guest {
 	background-color: #DDFFFF;
+}
+
+.main-background {
+	background-color: #f2efe9;
+}
+
+.main-content {
+	padding: 0px;
+}
+
+.img-responsive {
+	width: 100%;
+}
+
+.top-level-title {
+	font-size: 42px;
+	font-family: 'Rosewood Fill';
+	font-weight: bold;
+}
+
+.main-content-div {
+	padding-bottom: 35px;
 }

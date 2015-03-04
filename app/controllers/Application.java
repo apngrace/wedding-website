@@ -33,8 +33,7 @@ public class Application extends Controller {
 		new Page("Accommodations", "accommodations"),
 		new Page("Local Activities", "activities"),
 		new Page("Registry", "registry"),
-		new Page("Contact Us", "contact"),
-		RSVP_PAGE
+		new Page("Contact Us", "contact")
 	};
 	
 	public static Result rsvpSubmit(String term) {
@@ -75,14 +74,10 @@ public class Application extends Controller {
 		
 		Page current = RSVP_PAGE;
 		Html content = render(current.link, guests, term, false, true, false);
-		return ok(main.render(current, CONTENT_PAGES, content));
+		return ok(main.render(current, new Page[0], content));
 	}
 	
 	public static Result rsvp(String term) {
-		if (!checkAuth()) {
-    		return auth();
-    	}
-		
 		try {
 			term = URLDecoder.decode(term, "UTF-8");
 		} catch (Exception ex) {
@@ -116,10 +111,19 @@ public class Application extends Controller {
 		}
 		
 		Html content = render(current.link, guests, term, needsVerification, false, !(needsVerification) && alreadySubmitted);
-		return ok(main.render(current, CONTENT_PAGES, content));
+		return ok(main.render(current, new Page[0], content));
+	}
+	
+	public static Result rsvp() {
+		Html content = render("rsvp", new BeanList<Guest>(), "", false, false, false);
+		return ok(main.render(RSVP_PAGE, new Page[0], content));
 	}
     
-    public static Result content(String action) {	
+    public static Result content(String action) {
+    	if (action.equals(RSVP_PAGE.link) || action.isEmpty()) {
+    		return rsvp();
+    	}
+    	
     	if (!checkAuth()) {
     		return auth();
     	}
