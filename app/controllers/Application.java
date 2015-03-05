@@ -89,6 +89,10 @@ public class Application extends Controller {
 		
 		boolean needsVerification = false;
 		List<Guest> guests = Guest.findByName(term);
+		if (guests.size() == 0) {
+			guests = Guest.findByName(term.replace(" ", "%"));
+		}
+		
 		if (guests.size() > 1) {
 			String household = guests.get(0).household;
 			for (int i = 0;i<guests.size(); i++) {
