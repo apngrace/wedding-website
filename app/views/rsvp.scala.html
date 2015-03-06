@@ -18,6 +18,13 @@ $(document).ready(function(){
 	});
 	$("#submit-rsvp" ).on( "click", function(e) {
 		e.preventDefault();
+		var names = $(".rsvp-extra-guest");
+		for (var i = 0; i < names.length; i++) {
+			if ($(names[i]).val() === "" || $(names[i]).val() === undefined) {
+				alert("One of your guests has an empty name. Cannot submit. Please fill in or remove the guest...");
+				return;
+			}
+		}
  		$("#rsvp-form").submit();
 	});
 	$("#add-guest" ).on( "click", function(e) {
@@ -27,7 +34,7 @@ $(document).ready(function(){
 		}
 		var newGuest = $(items[0]).clone();
 		newGuest.find("input[type=hidden][name=id]").val("@Guest.newGuestId()");
-		newGuest.find(".rsvp-name").html('<input type="text" class="form-control rsvp-extra-guest" name="name" autocomplete="off" placeholder="Enter Name (Click Here)">');
+		newGuest.find(".rsvp-name").html($('<input type="text" class="form-control rsvp-extra-guest" name="name" autocomplete="off" placeholder="Enter Name (Click Here)"></input>'));
 		var removeGuest = $("#remove-guest");
 		removeGuest.show();
 		if (selectedItem == null) { removeGuest.prop("disabled", "true"); }
@@ -56,7 +63,7 @@ $(document).ready(function(){
 		$(".rsvp-inputs").hide();
 	}
 	@if(needsVerification) {
-		innerHtml = 'Found multiple guests for "@term".<br />Please select the correct guest by clicking on the name which best matches you...';
+		innerHtml = 'Found multiple guests for "@term".<br />Please select the correct guest by clicking on the name that best matches you...';
 	}
 	@if(isSubmit) {
 		innerHtml = 'Thanks for submitting your response!<br />You may verify your responses below and can revise them at any time prior to April 1st...';
@@ -135,7 +142,7 @@ $(document).ready(function(){
 						        </ul>
 					      	</div>
 		      			</span>
-	      				<div class="form-control" aria-label="...">Friday Rehearsal Dinner (Location TBD)</div>
+	      				<div class="form-control" aria-label="...">Friday Night Dinner (Location and Time TBD)</div>
 	    			</div><!-- /input-group -->
 	    			<div class="input-group input-group-lg rsvp-inputs">
 	    				<input type="hidden" name="attendingWedding" class="hidden-input" value="@guest.weddingStr"/>
@@ -149,7 +156,7 @@ $(document).ready(function(){
 						        </ul>
 					      	</div>
 	      				</span>
-	      				<div class="form-control" aria-label="...">Saturday Wedding and Reception (Aldrich Mansion)</div>
+	      				<div class="form-control" aria-label="...">Saturday Wedding and Reception (Aldrich Mansion, 5pm-12am)</div>
 	    			</div><!-- /input-group -->
 	  			</div><!-- /rsvp-item -->
 			} 
