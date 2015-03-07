@@ -115,3 +115,7 @@ body {
 .main-content-div {
 	padding-bottom: 35px;
 }
+
+.form-control.rsvp-extra-guest:hover {
+	background-color: beige;
+}
