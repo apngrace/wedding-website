@@ -38,6 +38,13 @@ public class Application extends Controller {
 	};
 	
 	public static Result rsvpSubmit(String term) {
+		try {
+			term = URLDecoder.decode(term, "UTF-8");
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return content(RSVP_PAGE.link);
+		}
+		
 		Map<String, String[]> fields = request().body().asFormUrlEncoded();
 		
 		String[] ids = fields.get("id"), names = fields.get("name");
