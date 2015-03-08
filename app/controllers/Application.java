@@ -19,9 +19,10 @@ import views.html.*;
 public class Application extends Controller {
 	public static final String AUTH_TIME = "authTime";
 	public static final long AUTH_TIMEOUT = 30 * 60 * 1000; //30 Minutes
-	public static final String PASSWORD = "springwedding";
+	public static final String PASSWORD = "charlotteishot";
 	
 	private static final Page RSVP_PAGE = new Page("RSVP", "rsvp");
+	private static final Page ADMIN_PAGE = new Page("Admin", "admin");
 	
 	public static Page AUTH = new Page("Password", "");
 	
@@ -123,6 +124,11 @@ public class Application extends Controller {
 		return ok(main.render(RSVP_PAGE, new Page[0], content));
 	}
     
+	public static Result admin() {
+		Html content = render("admin", Guest.findRSVPedGuests(), Guest.countRehearsal(), Guest.countWedding());
+		return ok(main.render(ADMIN_PAGE, new Page[0], content));
+	}
+    
     public static Result content(String action) {
     	if (action.equals(RSVP_PAGE.link) || action.isEmpty()) {
     		return rsvp();
@@ -134,6 +140,10 @@ public class Application extends Controller {
 
     	if (action.endsWith("/")) {
     		action = action.substring(0, action.length() - 1);
+    	}
+
+    	if (action.equals(ADMIN_PAGE.link)) {
+    		return admin();
     	}
 
     	Page current = getCurrentPage(action);
@@ -160,7 +170,7 @@ public class Application extends Controller {
     		return auth();
     	} else {
     		authorizeUser();
-    		return content("");
+    		return redirect("/admin");
     	}
     }
     

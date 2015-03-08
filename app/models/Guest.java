@@ -68,4 +68,16 @@ public class Guest extends Model {
 	public static List<Guest> findOtherHouseholdGuests(Guest guest) {
 		return Ebean.createQuery(Guest.class, "where household = ? and name != ? order by id").setParameter(1, guest.household).setParameter(2, guest.name).findList();
 	}
+	
+	public static List<Guest> findRSVPedGuests() {
+		return Ebean.createQuery(Guest.class, "where lastUpdateDate is not null order by lastUpdateDate DESC").findList();
+	}
+	
+	public static Integer countWedding() {
+		return Ebean.createSqlQuery("select count(attending_wedding) from guest where last_update_date is not null").findUnique().getInteger("count");
+	}
+	
+	public static Integer countRehearsal() {
+		return Ebean.createSqlQuery("select count(attending_rehearsal) from guest where last_update_date is not null").findUnique().getInteger("count");
+	}
 }

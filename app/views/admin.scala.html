@@ -1,0 +1,36 @@
+@(guests: com.avaje.ebean.common.BeanList[Guest], rehearsal:Integer, wedding:Integer)
+<div class="rsvp-item">
+	<div class="input-group input-group-lg rsvp-first-item rsvp-inputs">
+		<span class="input-group-addon rsvp-zero-pad">
+			<div class="form-control rsvp-button">@rehearsal</div>
+		</span>
+		<div class="form-control">Attending Friday Dinner</div>
+	</div>
+	<div class="input-group input-group-lg rsvp-first-item rsvp-inputs">
+		<span class="input-group-addon rsvp-zero-pad">
+			<div class="form-control rsvp-button">@wedding</div>
+		</span>
+		<div class="form-control">Attending Wedding and Reception</div>
+	</div>
+	<div>
+		@for(guest <- guests) {
+			<div class="rsvp-item guest-info">
+				<br />
+				<div class="rsvp-name">@guest.name</div>
+				<div class="rsvp-household">@guest.household</div>
+				<div class="input-group input-group-lg rsvp-first-item rsvp-inputs">
+	      			<span class="input-group-addon rsvp-zero-pad">
+					    <div class="form-control rsvp-button">@guest.rehearsalStr</div>
+	      			</span>
+	  				<div class="form-control" aria-label="...">Friday Dinner</div>
+				</div><!-- /input-group -->
+				<div class="input-group input-group-lg rsvp-inputs">
+				    <span class="input-group-addon rsvp-zero-pad">
+					    <div class="form-control rsvp-button">@guest.weddingStr</div>
+	  				</span>
+	  				<div class="form-control">Wedding and Reception</div>
+				</div><!-- /input-group -->
+			</div><!-- /rsvp-item -->
+		}
+	</div>
+</div>
