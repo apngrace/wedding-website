@@ -74,10 +74,10 @@ public class Guest extends Model {
 	}
 	
 	public static Integer countWedding() {
-		return Ebean.createSqlQuery("select count(attending_wedding) from guest where last_update_date is not null").findUnique().getInteger("count");
+		return Ebean.createSqlQuery("select count(attending_wedding) from guest where last_update_date is not null and attending_wedding = true").findUnique().getInteger("count");
 	}
 	
 	public static Integer countRehearsal() {
-		return Ebean.createSqlQuery("select count(attending_rehearsal) from guest where last_update_date is not null").findUnique().getInteger("count");
+		return Ebean.createSqlQuery("select count(attending_rehearsal) from guest where last_update_date is not null and attending_rehearsal = true").findUnique().getInteger("count");
 	}
 }
