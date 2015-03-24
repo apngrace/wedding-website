@@ -121,3 +121,11 @@ body {
 .form-control.rsvp-extra-guest:hover {
 	background-color: beige;
 }
+
+.admin-toggle-button {
+	margin-left: auto;
+	margin-right: auto;
+	width: 100%;
+	padding-bottom: 10px;
+	min-width: 400px;
+}

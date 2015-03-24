@@ -132,7 +132,7 @@ public class Application extends Controller {
 	}
     
 	public static Result admin() {
-		Html content = render("admin", Guest.findRSVPedGuests(), Guest.countRehearsal(), Guest.countWedding());
+		Html content = render("admin", Guest.findRSVPedGuests(), Guest.findWaitingGuests(), Guest.countRehearsal(), Guest.countWedding(), Guest.countWaiting());
 		return ok(main.render(ADMIN_PAGE, new Page[0], content));
 	}
     

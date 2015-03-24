@@ -1,4 +1,24 @@
-@(guests: com.avaje.ebean.common.BeanList[Guest], rehearsal:Integer, wedding:Integer)
+@(guests: com.avaje.ebean.common.BeanList[Guest], waitingGuests: com.avaje.ebean.common.BeanList[Guest], rehearsal:Integer, wedding:Integer, waiting:Integer)
+<script type="text/javascript">
+	$(document).ready(function(){
+		var showRsvp = true;
+		$("#waiting").hide();
+		$("#toggle-btn").text("View Waiting");
+		$("#toggle-btn").on( "click", function(e) {
+			if (showRsvp) {
+				$("#responded").hide();
+				$("#waiting").show();
+				$(this).text("View Responded");
+				showRsvp = false;
+			} else {
+				$("#responded").show();
+				$("#waiting").hide();
+				$(this).text("View Waiting");
+				showRsvp = true;
+			}
+		});
+	});
+</script>
 <div class="rsvp-item">
 	<div class="input-group input-group-lg rsvp-first-item rsvp-inputs">
 		<span class="input-group-addon rsvp-zero-pad">
@@ -12,7 +32,19 @@
 		</span>
 		<div class="form-control">Attending Wedding and Reception</div>
 	</div>
-	<div>
+	<div class="input-group input-group-lg rsvp-first-item rsvp-inputs">
+		<span class="input-group-addon rsvp-zero-pad">
+			<div class="form-control rsvp-button">@waiting</div>
+		</span>
+		<div class="form-control">Awaiting Response</div>
+	</div>
+	<div class="admin-toggle-button rsvp-bottom rsvp-inputs">
+		<div class="rsvp-submit-button">
+				<button class="btn btn-default rsvp-button" id="toggle-btn" type="button"></button>
+		</div>
+	</div>
+	<br />
+	<div id="responded">
 		@for(guest <- guests) {
 			<div class="rsvp-item guest-info">
 				<br />
@@ -22,7 +54,7 @@
 	      			<span class="input-group-addon rsvp-zero-pad">
 					    <div class="form-control rsvp-button">@guest.rehearsalStr</div>
 	      			</span>
-	  				<div class="form-control" aria-label="...">Friday Dinner</div>
+	  				<div class="form-control">Friday Dinner</div>
 				</div><!-- /input-group -->
 				<div class="input-group input-group-lg rsvp-inputs">
 				    <span class="input-group-addon rsvp-zero-pad">
@@ -31,6 +63,15 @@
 	  				<div class="form-control">Wedding and Reception</div>
 				</div><!-- /input-group -->
 			</div><!-- /rsvp-item -->
+		}
+	</div>
+	<div id="waiting">
+		@for(guest <- waitingGuests) {
+			<div class="rsvp-item guest-info">
+				<br />
+				<div class="rsvp-name">@guest.name</div>
+				<div class="rsvp-household">@guest.household</div>
+			</div>
 		}
 	</div>
 </div>

@@ -73,11 +73,19 @@ public class Guest extends Model {
 		return Ebean.createQuery(Guest.class, "where lastUpdateDate is not null order by lastUpdateDate DESC").findList();
 	}
 	
+	public static List<Guest> findWaitingGuests() {
+		return Ebean.createQuery(Guest.class, "where lastUpdateDate is null").findList();
+	}
+	
 	public static Integer countWedding() {
 		return Ebean.createSqlQuery("select count(attending_wedding) from guest where last_update_date is not null and attending_wedding = true").findUnique().getInteger("count");
 	}
 	
 	public static Integer countRehearsal() {
 		return Ebean.createSqlQuery("select count(attending_rehearsal) from guest where last_update_date is not null and attending_rehearsal = true").findUnique().getInteger("count");
+	}
+	
+	public static Integer countWaiting() {
+		return Ebean.createSqlQuery("select count(*) from guest where last_update_date is null").findUnique().getInteger("count");
 	}
 }
