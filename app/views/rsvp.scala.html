@@ -1,5 +1,5 @@
 @(guests: com.avaje.ebean.common.BeanList[Guest], term:String, needsVerification:Boolean, isSubmit:Boolean, alreadySubmitted:Boolean)
-<script type="text/javascript"> 
+<script type="text/javascript">
 $(document).ready(function(){
 	var selectedItem = null;
 	search = function() {
@@ -134,7 +134,7 @@ $(document).ready(function(){
 	    			<div class="input-group input-group-lg rsvp-first-item rsvp-inputs">
 	    				<input type="hidden" name="attendingRehearsal" class="hidden-input" value="@guest.rehearsalStr"/>
 		      			<span class="input-group-addon rsvp-zero-pad">
-					    	<div class="dropdown">
+					    	<div class="dropdown dropdown-div">
 						        <button class="btn btn-default dropdown-toggle rsvp-button" data-toggle="dropdown">@guest.rehearsalStr
 						        <span class="caret"></span></button>
 						        <ul class="dropdown-menu">
@@ -143,12 +143,12 @@ $(document).ready(function(){
 						        </ul>
 					      	</div>
 		      			</span>
-	      				<div class="form-control" aria-label="...">Friday Night Dinner (Location and Time TBD)</div>
+	      				<div class="form-control event-name">Friday Night Dinner (Location and Time TBD)</div>
 	    			</div><!-- /input-group -->
 	    			<div class="input-group input-group-lg rsvp-inputs">
 	    				<input type="hidden" name="attendingWedding" class="hidden-input" value="@guest.weddingStr"/>
 	    			    <span class="input-group-addon rsvp-zero-pad">
-					    	<div class="dropdown">
+					    	<div class="dropdown dropdown-div">
 						        <button class="btn btn-default dropdown-toggle rsvp-button" data-toggle="dropdown">@guest.weddingStr
 						        <span class="caret"></span></button>
 						        <ul class="dropdown-menu">
@@ -157,7 +157,7 @@ $(document).ready(function(){
 						        </ul>
 					      	</div>
 	      				</span>
-	      				<div class="form-control" aria-label="...">Saturday Wedding and Reception (Aldrich Mansion, 5pm-12am)</div>
+	      				<div class="form-control event-name">Saturday Wedding and Reception (Aldrich Mansion, 5pm-12am)</div>
 	    			</div><!-- /input-group -->
 	  			</div><!-- /rsvp-item -->
 			} 

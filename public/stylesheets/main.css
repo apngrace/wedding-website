@@ -74,8 +74,17 @@ body {
 	border: 0px;
 }
 
+.form-control.event-name {
+	height: inherit;
+	padding-bottom: 13px;
+}
+
+.dropdown.dropdown-div {
+	height: 100%;
+}
+
 .rsvp-button {
-	height: 46px;
+	height: inherit;
 	font-size: 24px;
 }
 
@@ -128,4 +137,4 @@ body {
 	width: 100%;
 	padding-bottom: 10px;
 	min-width: 400px;
-}
+}
